@@ -30,11 +30,19 @@ classdef ThermodynamicPanel
             obj.V = V;
             obj.L = L;
             obj.t = t;
+            
+            % Coolant Properties
             % obj.k =
             % obj.p =
             % obj.cp =
             % obj.v =
-            % obj.hair = 
+        end
+        
+        function Ti = calculateTi(To, Tinf)
+            % Calculate the Inlet Temperature of the coolant in the
+            % Thermodynamic Panel
+            rhs = exp(-( (obj.V * pi * obj.D)/(obj.p * obj.V * pi * (obj.D/4) * obj.cp) ));
+            Ti = Tinf - ( (Tinf - To)/rhs) );
         end
         
         function Ts = caluculateTs(qs, Ti, To, Tinf, ts)
@@ -90,7 +98,6 @@ classdef ThermodynamicPanel
                 Ts = Tsnew;
             end
             
-            obj.Ts = Ts;
         end
     end
     
