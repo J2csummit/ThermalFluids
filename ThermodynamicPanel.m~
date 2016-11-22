@@ -46,11 +46,11 @@ classdef ThermodynamicPanel
             
             % Get all values at film temperature
             pcool = interpolate(Tm, values, 1, 2)
-            cpcool = interpolate(Tm, values, 1, 3) * 1000
+            cpcool = interpolate(Tm, values, 1, 3)
             
             % Energy Balance
             m = pcool * (pi*(1/4)*obj.D^2) * obj.V;
-            Ecoolant = m * cpcool * (obj.To - obj.Ti)
+            Ecoolant = m * cpcool * (obj.To - obj.Ti); % Energy going into coolant
             dTo = (obj.Tinf - obj.To);
             dTi = (obj.Tinf - obj.Ti);
             dTlm = (dTo - dTi)/log(dTo/dTi);
