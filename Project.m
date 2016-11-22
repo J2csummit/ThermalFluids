@@ -39,4 +39,4 @@ massflow = pi*(ID/2)^2*velo*density; % kg/m^3
 Ti = ToK - (q/(massflow*cp)) % Inlet Temperature for Thermodynamic Plate
 
 panel = ThermodynamicPanel(0.04976, 0.1, 5, ToK, Ti);
-Ts = caluculateTs(panel, 625, 296, 350);
+Ts = caluculateTs(panel, 833, 296, 350);
