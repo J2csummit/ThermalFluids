@@ -1,0 +1,109 @@
+function [ Tco2, tco2, Tpo2, tpo2 ] = getOutletTemperatures( T1,t1,mh,mc,measure,tableh,tablec,L,R )
+
+    Ida = measure(1);
+    Idp = measure(2);
+    Odp = measure(3);
+    Ap = measure(4);
+    Aa = measure(5);
+    Dh = measure(6);
+    De = measure(7);
+    Tmh = T1; tmc = t1;
+    ph = interpolate(Tmh,tableh,1,2)
+    pc = interpolate(tmc,tablec,1,2)
+    Cph = interpolate(Tmh,tableh,1,3) 
+    Cpc = interpolate(tmc,tablec,1,3)
+    vh = interpolate(Tmh,tableh,1,4) 
+    vc = interpolate(tmc,tablec,1,4)
+    kh = interpolate(Tmh,tableh,1,5) 
+    kc = interpolate(tmc,tablec,1,5)
+    ah = interpolate(Tmh,tableh,1,6); 
+    ac = interpolate(tmc,tablec,1,6);
+    Prh = interpolate(Tmh,tableh,1,7); 
+    Prc = interpolate(tmc,tablec,1,7);
+    
+    if Aa > Ap
+        if mh > mc
+            Va = mh/(ph*Aa);
+            Vp = mc/(pc*Ap);
+            Rea = Va*De/vh;
+            Rep = Vp*IDp/vc;
+            Pra = Prh;
+            Prp = Prc;
+            ka = kh;
+            kp = kc;
+            na = 0.3;
+            np = 0.4;
+        else
+            Va = mc/(pc*Aa)
+            Vp = mh/(ph*Ap)
+            Rea = Va*De/vc
+            Rep = Vp*Idp/vh
+            Pra = Prc
+            Prp = Prh
+            ka = kc
+            kp = kh
+            na = 0.4
+            np = 0.3
+        end
+    else
+        if mh > mc
+            Vp = mh/(ph*Ap);
+            Va = mc/(pc*Aa);
+            Rea = Va*De/vc;
+            Rep = Vp*IDp/vh;
+            Pra = Prc;
+            Prp = Prh;
+            ka = kc;
+            kp = kh;
+            na = 0.4;
+            np = 0.3;
+        else
+            Vp = mc/(pc*Ap);
+            Va = mh/(ph*Aa);
+            Rea = Va*De/vh;
+            Rep = Vp*IDp/vc;
+            Pra = Prh;
+            Prp = Prc;
+            ka = kh;
+            kp = kc;
+            na = 0.3;
+            np = 0.4;
+        end
+    end
+    Rea
+    Rep
+    ha = getNusselt(Rea,De,L,Pra,ka,na)
+    hp = getNusselt(Rep,Idp,L,Prp,kp,np)
+    
+    Uo = (1/ha + 1/hp)^(-1);
+    U = (1/ha + 1/hp + R)^(-1);
+    r = mc*Cpc/(mh*Cph);
+    Ao = pi*Odp*L;
+    
+%     Ec1 = exp(Uo*Ao*(r-1)/(mc*Cpc));
+%     Tco1 = (T1*(r-1) - r*t1*(1-Ec1))/(r*Ec1 - 1);
+%     tco1 = t1 + (T1 - Tco1)/r;
+%     q1 = mc*Cpc*(tco1-t1);
+    
+    Ec2 = exp(U*Ao*(r-1)/(mc*Cpc));
+    Tco2 = (T1*(r-1) - r*t1*(1-Ec2))/(r*Ec2 - 1);
+    tco2 = t1 + (T1 - Tco2)/r;
+%     q2 = mc*Cpc*(tco2-t1);
+    
+%     Ep1 = exp(Uo*Ao*(r+1)/(mc*Cpc));
+%     Tpo1 = ((r + Ep1)*T1 + r*t1*(Ep1 - 1))/((r + 1)*Ep1);
+%     tpo1 = t1 + (T1 - Tpo1)/r;
+%     q3 = mc*Cpc*(tpo1-t1);
+    
+    Ep2 = exp(Uo*Ao*(r+1)/(mc*Cpc));
+    Tpo2 = ((r + Ep2)*T1 + r*t1*(Ep2 - 1))/((r + 1)*Ep2);
+    tpo2 = t1 + (T1 - Tpo2)/r;
+%     q4 = mc*Cpc*(tpo2-t1);
+    
+%     Count1 = [Uo, Tco1, tco1, q1];
+%     Count2 = [U, Tco2, tco2, q2];
+%     Par1 = [Uo, Tpo1, tpo1, q3];
+%     Par2 = [U, Tpo2, tpo2, q4];
+
+end
+
